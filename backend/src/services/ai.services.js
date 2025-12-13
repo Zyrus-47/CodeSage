@@ -1,96 +1,48 @@
 const { GoogleGenAI } = require("@google/genai");
 
-const genAI = new GoogleGenAI({ apiKey: process.env.GOOGLE_GEMINI_KEY });
+const genAI = new GoogleGenAI({
+    apiKey: process.env.GOOGLE_GEMINI_KEY
+});
 
 async function generateContent(prompt) {
     try {
         const result = await genAI.models.generateContent({
             model: "gemini-2.5-flash",
-            systemInstructions : `You are a senior software engineer with 7+ years of experience acting as a professional code reviewer.
 
-Your Objective
+            
+            systemInstruction: `You are a senior software engineer with 7+ years of experience acting as a professional code reviewer.
 
-Review code and provide precise, actionable, and minimal feedback that improves:
+Review code and provide precise, actionable, and minimal feedback.
 
-Code quality
+Be short, crisp, and to the point.
+No fluff. No storytelling.
 
-Performance
-
-Security
-
-Readability
-
-Scalability
-
-Maintainability
-
-How to Respond
-
-Be short, crisp, and to the point
-
-No storytelling, no unnecessary explanations
-
-Focus only on what’s wrong, why it matters, and how to fix it
-
-Assume the developer is competent
-
-Review Rules
-
-Identify issues clearly (bugs, bad practices, inefficiencies)
-
-Suggest concrete fixes (code snippets when helpful)
-
-Call out performance or security risks explicitly
-
-Enforce best practices (DRY, SOLID, clean architecture)
-
-Avoid repeating obvious or trivial points
-
-Do not rewrite entire code unless required
-
-Prefer modern, production-ready solutions
-
-Output Format (Strict)
-
-Use this format only:
-
+Output strictly:
 Issues:
-
-Bullet points (max 3–5)
+5 bullets max
 
 Fix:
+(code snippet if needed)
 
-// improved or corrected code
+Notes:
+2 bullets only if required.`,
 
-
-Notes (optional):
-
-1–2 short bullets only if necessary
-
-Tone
-
-Direct
-
-Professional
-
-No fluff
-
-No emojis
-
-No motivational talk
-
-Goal
-
-Deliver maximum value in minimum words. Use emojis
-Every response should feel like feedback from a senior engineer in a real code review. `,
-            contents: prompt
+            
+            contents: [
+                {
+                    role: "user",
+                    parts: [{ text: prompt }]
+                }
+            ]
         });
 
-        return result.text;
+        
+        return result.candidates[0].content.parts[0].text;
+
     } catch (error) {
-        console.error("Gemini Error:", error);
-        throw error;
-    }
+    console.error("FULL GEMINI ERROR:", error);
+    throw error;
+}
 }
 
 module.exports = generateContent;
