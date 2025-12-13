@@ -3,6 +3,9 @@ import "prismjs/themes/prism-tomorrow.css"
 import Editor from "react-simple-code-editor"
 import axios from 'axios'
 import Prism from "prismjs"
+import Markdown from "react-markdown"
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.css";
 import "prismjs/components/prism-javascript"
 import './App.css'
 
@@ -51,8 +54,9 @@ const [review, setReview] = useState(``)
           </div>
         </div>
 
-        <div className="right">{
-          review}</div>
+        <div className="right"><Markdown
+        rehypePlugins={[rehypeHighlight]}
+        >{review}</Markdown></div>
       </main>
     </>
   )
